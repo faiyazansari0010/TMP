@@ -1,0 +1,355 @@
+ML 1
+Feature Transformation
+Apply LDA Algorithm on Iris Dataset and classify which species a given flower belongs to.
+In [1]:
+In [2]:
+In [3]:
+In [4]:
+In [5]:
+Out[2]:
+Id SepalLengthCm SepalWidthCm PetalLengthCm PetalWidthCm Species
+0 1 5.1 3.5 1.4 0.2 Iris-setosa
+1 2 4.9 3.0 1.4 0.2 Iris-setosa
+2 3 4.7 3.2 1.3 0.2 Iris-setosa
+3 4 4.6 3.1 1.5 0.2 Iris-setosa
+4 5 5.0 3.6 1.4 0.2 Iris-setosa
+Out[5]: ▾ LogisticRegression
+LogisticRegression()
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.metrics import accuracy_score, confusion_matrix
+data = pd.read_csv('Iris.csv')
+data.head()
+X = data.iloc[:, 1:-1]
+y = data['Species']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+LDA = LinearDiscriminantAnalysis()
+X_train = LDA.fit_transform(X_train, y_train)
+X_test = LDA.transform(X_test)
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+
+
+
+
+ML 2
+Regression Analysis
+Use the diabetes data set from UCI and Pima Indians Diabetes data set for performing the following:
+a. Univariate analysis: Frequency, Mean, Median, Mode, Variance, Standard Deviation, Skewness and Kurtosis b.
+Bivariate analysis: Linear and logistic regression modeling c. Multiple Regression analysis d. Also compare the
+results of the above analysis for the two data sets
+In [7]:
+In [8]:
+In [9]:
+Accuracy - 96.6667 %
+Confusion Matrix
+[[11 0 0]
+[ 0 10 1]
+[ 0 0 8]]
+Out[8]:
+Pregnancies Glucose BloodPressure SkinThickness Insulin BMI DiabetesPedigreeFunction Age Outcome
+0 6 148 72 35 0 33.6 0.627 50 1
+1 1 85 66 29 0 26.6 0.351 31 0
+2 8 183 64 0 0 23.3 0.672 32 1
+3 1 89 66 23 94 28.1 0.167 21 0
+4 0 137 40 35 168 43.1 2.288 33 1
+Out[9]:
+Pregnancies Glucose BloodPressure SkinThickness Insulin BMI DiabetesPedigreeFunction
+count 768.000000 768.000000 768.000000 768.000000 768.000000 768.000000 768.000000 76
+mean 3.845052 120.894531 69.105469 20.536458 79.799479 31.992578 0.471876 3
+std 3.369578 31.972618 19.355807 15.952218 115.244002 7.884160 0.331329 1
+min 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.078000 2
+25% 1.000000 99.000000 62.000000 0.000000 0.000000 27.300000 0.243750 2
+50% 3.000000 117.000000 72.000000 23.000000 30.500000 32.000000 0.372500 2
+75% 6.000000 140.250000 80.000000 32.000000 127.250000 36.600000 0.626250 4
+max 17.000000 199.000000 122.000000 99.000000 846.000000 67.100000 2.420000 8
+y_pred = model.predict(X_test)
+print(f'Accuracy - {round(accuracy_score(y_test, y_pred)*100, 4)} %')
+print(f'Confusion Matrix \n{confusion_matrix(y_test, y_pred)}')
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression, LogisticRegression
+from sklearn.metrics import r2_score, accuracy_score
+data = pd.read_csv('diabetes.csv')
+data.head()
+data.describe()
+1
+2
+3
+4
+1
+2
+3
+4
+1
+2
+1
+
+Out[10]: Pregnancies 0.901674
+Glucose 0.173754
+BloodPressure -1.843608
+SkinThickness 0.109372
+Insulin 2.272251
+BMI -0.428982
+DiabetesPedigreeFunction 1.919911
+Age 1.129597
+Outcome 0.635017
+dtype: float64
+Out[11]: Pregnancies 0.159220
+Glucose 0.640780
+BloodPressure 5.180157
+SkinThickness -0.520072
+Insulin 7.214260
+BMI 3.290443
+DiabetesPedigreeFunction 5.594954
+Age 0.643159
+Outcome -1.600930
+dtype: float64
+Out[12]: Pregnancies 1.000
+Glucose 99.000
+BloodPressure 70.000
+SkinThickness 0.000
+Insulin 0.000
+BMI 32.000
+DiabetesPedigreeFunction 0.254
+Age 22.000
+Outcome 0.000
+Name: 0, dtype: float64
+Linear Regression R Squared Score 0.2314
+Logistic Regression Accuracy Score 0.7273
+A:\Applications\Anaconda\lib\site-packages\sklearn\linear_model\_logistic.py:460: ConvergenceW
+arning: lbfgs failed to converge (status=1):
+STOP: TOTAL NO. of ITERATIONS REACHED LIMIT.
+Increase the number of iterations (max_iter) or scale the data as shown in:
+ https://scikit-learn.org/stable/modules/preprocessing.html (https://scikit-learn.org/stabl
+e/modules/preprocessing.html)
+Please also refer to the documentation for alternative solver options:
+ https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression (https://sci
+kit-learn.org/stable/modules/linear_model.html#logistic-regression)
+n_iter_i = _check_optimize_result(
+data.skew()
+data.kurt()
+data.mode().iloc[0]
+X = data.iloc[:, :-1]
+y = data['Outcome']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+model = LinearRegression()
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+print(f'Linear Regression R Squared Score {round(r2_score(y_test, y_pred), 4)}')
+model = LogisticRegression()
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+print(f'Logistic Regression Accuracy Score {round(accuracy_score(y_test, y_pred), 4)}')
+
+
+
+
+
+
+
+ML 3
+Classification Analysis
+Implement K-Nearest Neighbours’ algorithm on Social network ad dataset. Compute confusion matrix, accuracy,
+error rate, precision and recall on the given dataset.
+In [15]:
+In [16]:
+In [17]:
+In [18]:
+In [19]:
+Out[16]:
+User ID Gender Age EstimatedSalary Purchased
+0 15624510 Male 19 19000 0
+1 15810944 Male 35 20000 0
+2 15668575 Female 26 43000 0
+3 15603246 Female 27 57000 0
+4 15804002 Male 19 76000 0
+Out[18]: ▾ KNeighborsClassifier
+KNeighborsClassifier()
+Confusion Matrix
+[[48 1]
+[ 6 25]]
+Accuracy -> 91.25 %
+Error Rate -> 0.0875
+Precision -> 0.9615
+Recall -> 0.8065
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import confusion_matrix, precision_score, accuracy_score, recall_score
+data = pd.read_csv('Social_Network_Ads.csv')
+data.head()
+X = data[['Age', 'EstimatedSalary']]
+y = data['Purchased']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+model = KNeighborsClassifier(n_neighbors=5)
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+print(f'''
+Confusion Matrix \n{confusion_matrix(y_test, y_pred)} \n
+Accuracy -> {round(accuracy_score(y_test, y_pred)*100, 4)} %
+Error Rate -> {round(1 - accuracy_score(y_test, y_pred), 4)}
+Precision -> {round(precision_score(y_test, y_pred), 4)}
+Recall -> {round(recall_score(y_test, y_pred), 4)}
+''')
+
+
+
+
+
+
+
+ML 4
+Implement K-Means clustering on Iris.csv dataset.
+Determine the number of clusters using the elbow method.
+In [20]:
+In [21]:
+In [22]:
+Out[21]:
+Id SepalLengthCm SepalWidthCm PetalLengthCm PetalWidthCm Species
+0 1 5.1 3.5 1.4 0.2 Iris-setosa
+1 2 4.9 3.0 1.4 0.2 Iris-setosa
+2 3 4.7 3.2 1.3 0.2 Iris-setosa
+3 4 4.6 3.1 1.5 0.2 Iris-setosa
+4 5 5.0 3.6 1.4 0.2 Iris-setosa
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+data = pd.read_csv('Iris.csv')
+data.head()
+X = data.iloc[:, 1:-1]
+
+inertia = []
+for i in range(1, 11):
+ model = KMeans(n_clusters=i, max_iter=300, random_state=0, n_init=10)
+ model.fit(X)
+ inertia.append(model.inertia_)
+
+plt.plot(range(1, 11), inertia, marker='o')
+plt.xlabel('No. of Clusters')
+plt.ylabel('Inertia')
+plt.title('Elbow Method')
+plt.show()
+
+
+
+
+
+
+
+ML 5
+Ensemble Learning
+Implement Random Forest Classifier model to predict the safety of the car.
+In [24]:
+In [25]:
+In [26]:
+Out[25]:
+vhigh vhigh.1 2 2.1 small low unacc
+0 vhigh vhigh 2 2 small med unacc
+1 vhigh vhigh 2 2 small high unacc
+2 vhigh vhigh 2 2 med low unacc
+3 vhigh vhigh 2 2 med med unacc
+4 vhigh vhigh 2 2 med high unacc
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import OrdinalEncoder
+from sklearn.metrics import accuracy_score, confusion_matrix
+data = pd.read_csv('car_evaluation.csv')
+data.head()
+data.columns = ['buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety', 'class']
+
+
+
+
+
+
+
+ML 6
+Reinforcement Learning
+Implement Reinforcement Learning using an example of a maze environment that the agent needs to explore.
+In [29]:
+In [30]:
+In [31]:
+Out[27]: ▾ RandomForestClassifier
+RandomForestClassifier()
+Accuracy 96.5318 %
+Confusion Matrix
+[[ 76 1 2 0]
+[ 4 14 0 0]
+[ 5 0 230 0]
+[ 0 0 0 14]]
+X = data.iloc[:, :-1]
+y = data['class']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+encoder = OrdinalEncoder()
+X_train = encoder.fit_transform(X_train)
+X_test = encoder.transform(X_test)
+model = RandomForestClassifier()
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+print(f'Accuracy {round(accuracy_score(y_test, y_pred)*100, 4)} %')
+print(f'Confusion Matrix \n{confusion_matrix(y_test, y_pred)}')
+import numpy as np
+maze = np.array([
+ [0, 0, 0, 0, 0],
+ [0, 1, 0, 1, 0],
+ [0, 0, 0, 0, 0],
+ [0, 1, 1, 1, 0],
+ [0, 0, 0, 0, 2]
+]) # goal = 2
+epsilon = 0.1
+num_episodes = 1000
+num_states = maze.size
+num_actions = 4
+Q = np.zeros((num_states, num_actions))
+for _ in range(num_episodes):
+ state = 0 #start
+
+ while True:
+ if np.random.uniform(0, 1) < epsilon:
+ action = np.random.choice(num_actions)
+ else:
+ action = np.argmax(Q[state, :])
+
+ new_state = state + [0, 1, 2, 3][action]
+ reward = [-1, 1, 0][maze.flat[new_state]]
+
+ if reward:
+ break
+ else:
+ state = new_state
+
+Agent moved to state -> 1
+Agent moved to state -> 2
+Agent moved to state -> 3
+Agent moved to state -> 4
+Agent moved to state -> 5
+Agent moved to state -> 6
+Agent moved to state -> 7
+Agent moved to state -> 8
+Agent moved to state -> 9
+Agent moved to state -> 10
+Agent moved to state -> 11
+Agent moved to state -> 12
+Agent moved to state -> 13
+Agent moved to state -> 14
+Agent moved to state -> 15
+Agent moved to state -> 16
+current_state = 0
+while current_state != 16: #goal state
+ action = np.argmax(Q[current_state, :])
+ current_state += action + 1
+
+ print('Agent moved to state ->', current_state)
