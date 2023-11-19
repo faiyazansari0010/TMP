@@ -1,0 +1,442 @@
+11/18/23, 12:19 PM DMV Combined - Jupyter Notebook
+localhost:8888/notebooks/DMV Combined.ipynb 1/20
+Datasets
+7 - format 1, 2, 3
+8 - openweather API https://home.openweathermap.org/api_keys
+(https://home.openweathermap.org/api_keys)
+9 - telecom_churn
+10 - housing
+11 - AQI data set
+12 - retail_sales_data
+13 - stock.txt
+
+
+
+
+
+DMV 7
+Title of the Assignment: Data Loading, Storage and File Formats
+Problem Statement: Analyzing Sales Data from Multiple File Formats
+
+data.info()
+data.describe()
+data.dtypes
+data.duplicated().sum()
+. . .
+. . .
+. . .
+(1000, 16)
+. . .
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+csv = pd.read_csv('format1.csv')
+excel = pd.read_excel('format2.xlsx')
+json = pd.read_json('format3.json')
+csv.head()
+excel.head()
+json.head()
+data = pd.concat([csv, excel, json])
+print(data.shape)
+data.isna().sum()
+
+plt.figure(figsize=(12, 4))
+sns.boxplot(data)
+plt.show()
+sns.pairplot(data)
+plt.show()
+
+
+
+
+
+
+DMV 8
+Title of the Assignment: Interacting with Web APIs
+Problem Statement: Analyzing Weather Data from OpenWeatherMap API
+In [11]:
+In [12]:
+In [13]:
+plt.figure(figsize=(12, 6))
+plt.title('Product Sales by Category')
+sns.barplot(x=data['Product line'], y=data['Total'])
+plt.show()
+import requests
+import json
+import pandas as pd
+import matplotlib.pyplot as plt
+API = '04e2dd182fb17eb1355467c36dd9a63c'
+countries = ['Jamaica', 'United States', 'Turkey', 'Egypt', 'China', 'Saudi Arabi
+dataframe = []
+for country in countries:
+ url = f'http://api.openweathermap.org/data/2.5/weather?q={country}&appid={API
+
+ response = requests.get(url).json()
+ tmp = (response['main'])
+ tmp['windspeed'] = response['wind']['speed']
+ tmp['name'] = country
+
+ dataframe.append(tmp)
+
+data.isna().sum()
+data.info()
+data.describe()
+data.duplicated().sum()
+
+temp feels_like temp_min temp_max pressure humidity sea_level grnd_level windspeed name
+0 293.32 293.77 293.32 293.71 1008 91 1008.0 993.0 1.79 Jamaica
+1 279.62 279.62 279.62 279.62 1019 53 1019.0 954.0 0.61 United
+States
+2 280.55 278.01 280.55 280.55 1011 49 1011.0 877.0 3.90 Turkey
+3 285.52 285.24 283.35 287.96 1002 93 NaN NaN 0.00 Egypt
+4 294.96 295.15 294.96 294.96 1015 75 1015.0 998.0 1.32 China
+data = pd.DataFrame(dataframe)
+data.head()
+plt.figure(figsize=(12, 4))
+plt.bar(data['name'], data['temp_min'], color='skyblue')
+plt.title('Minimum Temperatures')
+plt.show()
+plt.figure(figsize=(12, 4))
+plt.bar(data['name'], data['temp_max'], color='crimson')
+plt.title('Maximum Temperatures')
+plt.show()
+
+
+
+
+
+
+
+
+
+DMV 9
+Title of the Assignment: Data Cleaning and Preparation
+Problem Statement: Analyzing Customer Churn in a Telecommunications Company
+
+. . .
+. . .
+Out[21]: Index(['customer_id', 'telecom_partner', 'gender', 'age', 'state', 'city',
+ 'pincode', 'date_of_registration', 'num_dependents', 'estimated_salary',
+ 'calls_made', 'sms_sent', 'data_used', 'churn'],
+ dtype='object')
+corr = data[['temp_min', 'temp_max', 'humidity']].corr()
+sns.heatmap(corr, annot=True)
+plt.title('Tempearture Humidity Correlation')
+plt.show()
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+data = pd.read_csv('telecom_churn.csv')
+data.head()
+data.isnull().sum()
+data.columns
+
+data.to_csv('Cleaned_Customer_churn.csv', index=False)
+Out[22]:
+gender age num_dependents estimated_salary calls_made sms_sent data_used churn
+0 F 25 4 124962 44 45 -361 0
+1 F 55 2 130556 62 39 5973 0
+2 F 57 0 148828 49 24 193 1
+3 M 46 1 38722 80 25 9377 1
+4 F 26 2 55098 78 15 1393 0
+Out[23]:
+gender age num_dependents estimated_salary calls_made sms_sent data_used churn
+0 0 25 4 124962 44 45 -361 0
+1 0 55 2 130556 62 39 5973 0
+2 0 57 0 148828 49 24 193 1
+3 1 46 1 38722 80 25 9377 1
+4 0 26 2 55098 78 15 1393 0
+data.drop(['customer_id', 'telecom_partner', 'state', 'city', 'pincode', 'date_of
+ axis=1, inplace=True)
+data.head()
+encoder = LabelEncoder()
+data['gender'] = encoder.fit_transform(data['gender'])
+data.head()
+plt.figure(figsize=(12, 6))
+data.boxplot()
+plt.show()
+X = data.iloc[:, :-1]
+y = data['churn']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train)
+X_test = sc.transform(X_test)
+
+
+
+
+
+
+
+DMV 10
+Title of the Assignment: Data Wrangling
+Problem Statement: Data Wrangling on Real Estate Market
+
+data.info()
+data.describe()
+In [30]:
+Out[28]:
+price area bedrooms bathrooms stories mainroad guestroom basement hotwaterheating airc
+0 13300000 7420 4 2 3 yes no no no
+1 12250000 8960 4 4 4 yes no no no
+2 12250000 9960 3 2 2 yes no yes no
+3 12215000 7500 4 2 2 yes no yes no
+4 11410000 7420 4 1 2 yes yes yes no
+. . .
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
+data = pd.read_csv('Housing.csv')
+data.head()
+data.isnull().sum()
+data.boxplot()
+plt.show()
+
+Out[32]:
+price area bedrooms bathrooms stories mainroad guestroom basement hotwaterheating airc
+15 9100000 6000 4 1 2 yes no yes no
+16 9100000 6600 4 2 2 yes yes yes no
+17 8960000 8500 3 2 4 yes no no no
+18 8890000 4600 3 2 2 yes yes no no
+19 8855000 6420 3 2 2 yes no no no
+Out[33]: Index(['price', 'area', 'bedrooms', 'bathrooms', 'stories', 'mainroad',
+ 'guestroom', 'basement', 'hotwaterheating', 'airconditioning',
+ 'parking', 'prefarea', 'furnishingstatus'],
+ dtype='object')
+Q1 = data['price'].quantile(0.25)
+Q3 = data['price'].quantile(0.75)
+IQR = Q3 - Q1
+minm = Q1 - (1.5*IQR)
+maxm = Q3 + (1.5*IQR)
+data = data[(data['price']>minm) & (data['price']<maxm)]
+data.head()
+data.columns
+data.boxplot()
+plt.show()
+
+
+
+
+
+
+
+
+
+DMV 11
+Title of the Assignment: Data Visualization using matplotlib
+Problem Statement: Analyzing Air Quality Index (AQI) Trends in a City
+In [36]:
+In [37]:
+In [38]:
+Out[35]:
+price area bedrooms bathrooms stories mainroad guestroom basement hotwaterheating airc
+15 9100000 6000 4 1 2 1 0 1 0
+16 9100000 6600 4 2 2 1 1 1 0
+17 8960000 8500 3 2 4 1 0 0 0
+18 8890000 4600 3 2 2 1 1 0 0
+19 8855000 6420 3 2 2 1 0 0 0
+Out[37]:
+Id Mounths PM10 in
+æg/m3
+SO2 in
+æg/m3
+NOx in
+æg/m3
+PM2.5
+in
+æg/m3
+Ammonia -
+NH3 in
+æg/m3
+O3 in
+æg/m3
+CO in
+mg/m3
+Benzene
+in æg/m3 AQI
+0 1 Jan-17 174.0 26.4 35.0 79 25.0 107.6 0.9 0.7 149.0
+1 2 Feb-17 143.0 35.1 40.3 75 31.0 103.0 0.9 0.9 129.0
+2 3 Mar-17 142.0 32.1 30.9 59 26.0 80.7 0.8 0.5 128.0
+3 4 Apr-17 117.0 50.9 36.3 75 36.0 79.5 0.9 0.7 111.0
+4 5 May-17 NaN 41.6 25.2 53 28.0 70.0 0.5 0.5 NaN
+Out[38]: Id 0
+Mounths 0
+PM10 in æg/m3 6
+SO2 in æg/m3 1
+NOx in æg/m3 2
+PM2.5 in æg/m3 0
+Ammonia - NH3 in æg/m3 0
+O3 in æg/m3 0
+CO in mg/m3 0
+Benzene in æg/m3 0
+AQI 5
+dtype: int64
+encoder = LabelEncoder()
+for col in ['mainroad', 'guestroom', 'basement', 'hotwaterheating', 'aircondition
+ data[col] = encoder.fit_transform(data[col])
+
+data.head()
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from random import random
+data = pd.read_csv('AQI Data Set.csv')
+data.head()
+data.isnull().sum()
+
+Out[40]: Index(['Id', 'Mounths', 'PM10 in æg/m3', 'SO2 in æg/m3', 'NOx in æg/m3',
+ ' PM2.5 in æg/m3', 'Ammonia - NH3 in æg/m3', 'O3 in æg/m3',
+ 'CO in mg/m3', ' Benzene in æg/m3', 'AQI'],
+ dtype='object')
+Out[41]:
+ID Months PM10 SO2 NOx PM2.5 NH3 O3 CO Benzene AQI
+0 1 Jan-17 174.0 26.4 35.0 79 25.0 107.6 0.9 0.7 149.0
+1 2 Feb-17 143.0 35.1 40.3 75 31.0 103.0 0.9 0.9 129.0
+2 3 Mar-17 142.0 32.1 30.9 59 26.0 80.7 0.8 0.5 128.0
+3 4 Apr-17 117.0 50.9 36.3 75 36.0 79.5 0.9 0.7 111.0
+6 7 Jul-17 111.0 38.9 21.5 29 30.0 24.4 0.3 0.7 106.7
+data.dropna(inplace=True)
+data.columns
+data.columns = ['ID', 'Months', 'PM10', 'SO2', 'NOx', 'PM2.5', 'NH3', 'O3', 'CO',
+data.head()
+
+In [42]: for col in data.iloc[:, 2:]:
+ random_color = (random(), random(), random())
+
+ plt.figure(figsize=(12, 4))
+ plt.plot(data['Months'], data[col], color=random_color, label=col)
+ plt.title(f'{col} Trend Over Time')
+ plt.xlabel('Month')
+ plt.xticks(rotation=90)
+ plt.ylabel(col)
+ plt.legend()
+
+plt.show()
+
+In [43]: plt.figure(figsize=(12, 6))
+plt.bar(data['Months'], data['AQI'])
+plt.title('AQI Comparison')
+plt.xlabel('Months')
+plt.ylabel('AQI')
+plt.xticks(rotation=90)
+plt.show()
+
+plt.figure(figsize=(12, 6))
+data.boxplot()
+plt.title('Distribution of AQI for Pollutants')
+plt.show()
+plt.figure(figsize=(12, 8))
+for col in ['PM2.5', 'SO2', 'O3']:
+ plt.scatter(data['AQI'], data[col], s=100, label=col, alpha=0.7)
+
+plt.title('Scatter Plot : AQI v/s Pollutants')
+plt.xlabel('AQI')
+plt.ylabel('Level')
+plt.legend()
+plt.grid()
+plt.show()
+
+
+
+
+
+
+
+
+
+DMV 12
+Title of the Assignment: Data Aggregation
+Problem Statement: Analyzing Sales Performance by Region in a Retail Company
+In [46]:
+In [47]:
+data.describe()
+data.isna().sum()
+data.info()
+In [48]:
+In [49]:
+C:\Users\Atharva Taras\AppData\Local\Temp\ipykernel_24636\409561451.py:1: UserWarnin
+g: Parsing dates in DD/MM/YYYY format when dayfirst=False (the default) was specifie
+d. This may lead to inconsistently parsed dates! Specify a format to ensure consiste
+nt parsing.
+data = pd.read_csv('retail_sales_data.csv', parse_dates=['invoice_date'])
+Out[47]:
+invoice_no customer_id gender age category quantity price payment_method invoice_date sho
+0 I138884 C241288 Female 28 Clothing 5 1500.40 Credit Card 2022-05-08
+1 I317333 C111565 Male 21 Shoes 3 1800.51 Debit Card 2021-12-12 Fo
+2 I127801 C266599 Male 20 Clothing 1 300.08 Cash 2021-09-11
+3 I173702 C988172 Female 66 Shoes 5 3000.85 Credit Card 2021-05-16 M
+4 I337046 C189076 Female 53 Books 4 60.60 Cash 2021-10-24
+Out[48]:
+category quantity price invoice_date shopping_mall
+0 Clothing 5 1500.40 2022-05-08 Kanyon
+1 Shoes 3 1800.51 2021-12-12 Forum Istanbul
+2 Clothing 1 300.08 2021-09-11 Metrocity
+3 Shoes 5 3000.85 2021-05-16 Metropol AVM
+4 Books 4 60.60 2021-10-24 Kanyon
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+data = pd.read_csv('retail_sales_data.csv', parse_dates=['invoice_date'])
+data.head()
+data.drop(['invoice_no', 'customer_id', 'gender', 'age', 'payment_method'], axis=
+data.head()
+data['sales'] = data['price']*data['quantity']
+
+Out[50]: Text(0.5, 1.0, 'Sales Distribution')
+regional = data.groupby('shopping_mall')['sales'].sum()
+regional.plot(kind='bar')
+plt.title('Sales Distribution')
+
+
+
+
+
+
+DMV 13
+Title of the Assignment: Time Series Data Analysis
+Problem statement: Analysis and Visualization of Stock Market Data
+In [52]:
+In [53]:
+Out[51]: <Axes: xlabel='shopping_mall'>
+Out[53]:
+Open High Low Close Volume OpenInt
+Date
+2012-05-18 42.05 45.00 38.00 38.23 580438450 0
+2012-05-21 36.53 36.66 33.00 34.03 169418988 0
+2012-05-22 32.61 33.59 30.94 31.00 101876406 0
+2012-05-23 31.37 32.50 31.36 32.00 73678512 0
+2012-05-24 32.95 33.21 31.77 33.03 42560731 0
+regional_catg = data.groupby(['shopping_mall', 'category'])['sales'].sum().unstac
+regional_catg.plot(kind='bar', stacked=True)
+import pandas as pd
+import matplotlib.pyplot as plt
+from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.tsa.seasonal import STL
+data = pd.read_csv('stock.txt', parse_dates=['Date'], index_col=['Date'])
+data.head()
+
+data.describe()
+data.isna().sum()
+data.info()
+In [54]:
+In [55]:
+data['30d_avg'] = data['Close'].rolling(window=30).mean()
+data['60d_avg'] = data['Close'].rolling(window=60).mean()
+data[[ 'Close', '30d_avg', '60d_avg']].plot(figsize=(12, 6), label='Moving Avgs')
+plt.show()
+
+In [56]: for i in (7, 30, 365):
+ result = STL(data['Close'], period=i).fit()
+ fig = result.plot()
+ fig.set_size_inches(12, 6)
+
+11/18/23, 12:19 PM DMV Combined - Jupyter Notebook
+localhost:8888/notebooks/DMV Combined.ipynb 20/20
+In [58]: corr = data[['Volume', 'Close']].corr()
+sns.heatmap(corr, annot=True)
+plt.show()
+1
+2
+3
